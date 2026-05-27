@@ -1,6 +1,32 @@
 {
-  "spider": "https://ghproxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;f68e5944111357662c5c935749f1092e",
-  "sites": [],
-  "flags": ["youku", "qq", "iqiyi", "qiyi", "letv", "sohu", "tudou", "pptv", "mgtv", "wasu", "bilibili"],
-  "rules": []
+  "class": [
+    {"type_id": "dianying", "type_name": "電影"},
+    {"type_id": "lianxuju", "type_name": "連續劇"}
+  ],
+  "filters": {
+    "dianying": [
+      {
+        "key": "0",
+        "name": "分類",
+        "value": [
+          {"n": "全部", "v": "dianying"},
+          {"n": "動作片", "v": "dongzuopian"}
+        ]
+      }
+    ]
+  },
+  "list": [
+    {
+      "vod_id": "1901",
+      "vod_name": "測試影片一",
+      "vod_pic": "https://dummyimage.com/200x300/000/fff&text=Video1",
+      "vod_remarks": "高清"
+    },
+    {
+      "vod_id": "1908",
+      "vod_name": "測試影片二",
+      "vod_pic": "https://dummyimage.com/200x300/000/fff&text=Video2",
+      "vod_remarks": "標清"
+    }
+  ]
 }
