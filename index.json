@@ -1,32 +1,24 @@
 {
-  "class": [
-    {"type_id": "dianying", "type_name": "電影"},
-    {"type_id": "lianxuju", "type_name": "連續劇"}
+  "spider": "https://ghproxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;f68e5944111357662c5c935749f1092e",
+  "sites": [
+    {
+      "key": "douban",
+      "name": "豆瓣",
+      "type": 3,
+      "api": "csp_DouDou",
+      "searchable": 0,
+      "quickSearch": 0,
+      "filterable": 0
+    }
   ],
-  "filters": {
-    "dianying": [
-      {
-        "key": "0",
-        "name": "分類",
-        "value": [
-          {"n": "全部", "v": "dianying"},
-          {"n": "動作片", "v": "dongzuopian"}
-        ]
+  "parses": [
+    {
+      "name": "解析",
+      "type": 1,
+      "url": "https://jx.jsonplayer.com/player/?url=",
+      "ext": {
+        "flag": ["qq", "qiyi", "letv", "sohu", "tudou", "pptv", "mgtv", "youku"]
       }
-    ]
-  },
-  "list": [
-    {
-      "vod_id": "1901",
-      "vod_name": "測試影片一",
-      "vod_pic": "https://dummyimage.com/200x300/000/fff&text=Video1",
-      "vod_remarks": "高清"
-    },
-    {
-      "vod_id": "1908",
-      "vod_name": "測試影片二",
-      "vod_pic": "https://dummyimage.com/200x300/000/fff&text=Video2",
-      "vod_remarks": "標清"
     }
   ]
 }
