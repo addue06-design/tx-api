@@ -1,9 +1,7 @@
 {
+  "spider": "https://cyao2q.github.io/files/jar/custom_spider.jar",
   "classes": [
-    {
-      "type_id": "1",
-      "type_name": "我的收藏"
-    }
+    {"type_id": "1", "type_name": "我的收藏"}
   ],
   "list": [
     {
