@@ -3,11 +3,8 @@
     {
       "key": "dramasq",
       "name": "DramasQ",
-      "type": 0,
-      "api": "https://script.google.com/macros/s/AKfycbzCsLjWI0AlI2RwRSc00RWWLQtTM3qx5mW_jtEDm1Vj0L9fTlZjHXFOsFTW0nYfREXB/exec?ac=list",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0
+      "type": 3,
+      "api": "你的dramasq.js網址"
     }
   ]
 }
