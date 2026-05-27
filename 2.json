@@ -1,10 +1,10 @@
 {
-  "sites": [
-    {
-      "key": "dramasq",
-      "name": "DramasQ",
-      "type": 3,
-      "api": "https://raw.githubusercontent.com/addue06-design/tx-api/refs/heads/main/dramasq.js"
-    }
-  ]
+  "key":"dramasq",
+  "name":"DramasQ",
+  "type":3,
+  "api":"./js/drpymin2.js",
+  "searchable":1,
+  "quickSearch":1,
+  "filterable":1,
+  "ext":"./js/dramasq.js"
 }
