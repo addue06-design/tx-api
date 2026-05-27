@@ -17,11 +17,11 @@ var rule = {
     lazy:`js:
 let html = request(input);
 
-let m = html.match(/var player_aaaa=({.*?})</);
+let match = html.match(/var player_aaaa=({.*?})</);
 
-if(m){
+if(match){
 
-    let data = JSON.parse(m[1]);
+    let data = JSON.parse(match[1]);
 
     input = {
         parse:0,
@@ -34,19 +34,104 @@ if(m){
 }
 `,
 
-    limit:6,
+    limit:20,
 
-    推荐:'.items&&li;a&&title;a&&data-original;.module-item-note&&Text;a&&href',
+    推荐:`js:
+let d=[];
 
-    一级:'.items&&li;a&&title;a&&data-original;.module-item-note&&Text;a&&href',
+pdfa(html,'.module-items .module-item').forEach(it=>{
 
-    二级:{
-        title:'h1&&Text',
-        img:'.lazyload&&data-original',
-        desc:'font&&Text',
-        content:'pre&&Text',
-        tabs:'.title',
-        lists:'.items:eq(#id)&&li'
-    }
+    d.push({
+        title:pdfh(it,'.module-item-title&&Text'),
+        pic_url:pd(it,'.module-item-pic&&img&&data-original',HOST),
+        desc:pdfh(it,'.module-item-note&&Text'),
+        url:pd(it,'a&&href',HOST)
+    });
 
+});
+
+setResult(d);
+`,
+
+    一级:`js:
+let d=[];
+
+pdfa(html,'.module-items .module-item').forEach(it=>{
+
+    d.push({
+        title:pdfh(it,'.module-item-title&&Text'),
+        pic_url:pd(it,'.module-item-pic&&img&&data-original',HOST),
+        desc:pdfh(it,'.module-item-note&&Text'),
+        url:pd(it,'a&&href',HOST)
+    });
+
+});
+
+setResult(d);
+`,
+
+    二级:`js:
+VOD = {};
+
+VOD.vod_name = pdfh(html,'h1&&Text');
+
+VOD.vod_pic = pd(html,'.module-item-pic&&img&&data-original',HOST);
+
+VOD.type_name = pdfh(html,'.module-info-tag-link:eq(0)&&Text');
+
+VOD.vod_content = pdfh(html,'pre&&Text');
+
+let tabs = pdfa(html,'.module-tab-item');
+
+let playmap = {};
+
+tabs.forEach((tab,i)=>{
+
+    let from = pdfh(tab,'body&&Text');
+
+    playmap[from] = [];
+
+    let list = pdfa(html,'.module-play-list:eq('+i+') a');
+
+    list.forEach(it=>{
+
+        let title = pdfh(it,'a&&Text');
+
+        let url = pd(it,'a&&href',HOST);
+
+        playmap[from].push(title + '$' + url);
+
+    });
+
+});
+
+VOD.vod_play_from = Object.keys(playmap).join('$$$');
+
+let urls = [];
+
+Object.keys(playmap).forEach(key=>{
+
+    urls.push(playmap[key].join('#'));
+
+});
+
+VOD.vod_play_url = urls.join('$$$');
+`,
+
+    搜索:`js:
+let d=[];
+
+pdfa(html,'.module-items .module-item').forEach(it=>{
+
+    d.push({
+        title:pdfh(it,'.module-item-title&&Text'),
+        pic_url:pd(it,'.module-item-pic&&img&&data-original',HOST),
+        desc:pdfh(it,'.module-item-note&&Text'),
+        url:pd(it,'a&&href',HOST)
+    });
+
+});
+
+setResult(d);
+`
 }
