@@ -4,7 +4,7 @@
       "key": "dramasq",
       "name": "DramasQ",
       "type": 3,
-      "api": "你的dramasq.js網址"
+      "api": "https://raw.githubusercontent.com/addue06-design/tx-api/refs/heads/main/dramasq.js"
     }
   ]
 }
