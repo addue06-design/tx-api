@@ -1,7 +1,11 @@
 var rule = {
     title:'DramasQ',
-    host:'https://dramasq.com.tr',
-
+    host:'https://www.dramasq.com.tr',
+    headers:{
+        'User-Agent':'Mozilla/5.0',
+        'Referer':'https://dramasq.com.tr/',
+        'Accept-Language':'zh-TW,zh;q=0.9'
+    },
     url:'/vodshow/fyclass--------fypage---.html',
     searchUrl:'/vodsearch/**----------fypage---.html',
 
