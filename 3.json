@@ -1,9 +1,0 @@
-{
-  "key":"dramasq",
-  "name":"DramasQ",
-  "type":3,
-  "api":"./js/dramasq.js",
-  "searchable":1,
-  "quickSearch":1,
-  "filterable":0
-}
