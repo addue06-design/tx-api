@@ -32,6 +32,9 @@ def detail():
         pattern = r'href=[\'"]\/video\/' + re.escape(vod_id) + r'-(\d+)\.html.*?[\'"][^>]*>(.*?)<\/a>'
         ep_matches = re.findall(pattern, html)
         
+        # 🔥 動態獲取當前服務的基礎網址 (在本地會是 http://127.0.0.1:5000/，在雲端會是 https://tx-api.onrender.com/)
+        base_url = request.host_url.rstrip('/')
+        
         play_list = []
         seen_eps = set()
         
@@ -47,11 +50,13 @@ def detail():
                 elif clean_title.startswith("get"):
                     clean_title = f"第{ep_num}集"
                     
-                play_url = f"http://127.0.0.1:5000/play?id={vod_id}&ep={ep_num}"
+                # 🛠️ 將 127.0.0.1 改為動態網址 base_url
+                play_url = f"{base_url}/play?id={vod_id}&ep={ep_num}"
                 play_list.append(f"{clean_title}${play_url}")
         else:
             for ep in range(1, 41):
-                play_url = f"http://127.0.0.1:5000/play?id={vod_id}&ep={ep}"
+                # 🛠️ 保底邏輯也同步改為動態網址
+                play_url = f"{base_url}/play?id={vod_id}&ep={ep}"
                 play_list.append(f"第{ep}集${play_url}")
 
         vod_play_url = "#".join(play_list)
