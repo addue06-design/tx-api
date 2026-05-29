@@ -61,7 +61,11 @@ def detail():
                         "vod_id": vod_id,
                         "vod_name": vod_name,
                         "vod_play_from": "DramaQ線路",
-                        "vod_play_url": vod_play_url
+                        "vod_play_url": vod_play_url,
+                        "type_id": "1",
+                        "type_name": "連續劇",
+                        "vod_pic": "https://www.dramasq.com.tr/statics/img/nopic.gif",
+                        "vod_remarks": "查看選集"
                     }
                 ]
             })
@@ -100,7 +104,12 @@ def detail():
                     "vod_id": v_id,
                     "vod_name": clean_name,
                     "vod_pic": "https://www.dramasq.com.tr/statics/img/nopic.gif",
-                    "vod_remarks": "點擊選集播放"
+                    "vod_remarks": "點擊選集播放",
+                    "type_id": "1",
+                    "type_name": "連續劇",
+                    "vod_en": "",
+                    "vod_actor": "",
+                    "vod_director": ""
                 })
                 
             return jsonify({"list": vod_list})
@@ -108,7 +117,8 @@ def detail():
         except Exception as e:
             return jsonify({"error": f"Search error: {str(e)}", "list": []})
 
-    # ------------------ 情況 3：首頁初始化保底 ------------------
+    # ------------------ 情況 3：【終極修復】首頁初始化保底 ------------------
+    # 補齊所有 Java 物件轉換所需的標準欄位，徹底防止開機閃退
     return jsonify({
         "class": [
             {"class_id": "1", "class_name": "劇迷熱門連續劇"}
@@ -118,7 +128,12 @@ def detail():
                 "vod_id": "46951",
                 "vod_name": "逐玉 (雲端測試推薦，請點擊搜尋看更多)",
                 "vod_pic": "https://www.dramasq.com.tr/statics/img/nopic.gif",
-                "vod_remarks": "40集完結"
+                "vod_remarks": "40集完結",
+                "type_id": "1",
+                "type_name": "連續劇",
+                "vod_en": "zhuyu",
+                "vod_actor": "測試演員",
+                "vod_director": "測試導演"
             }
         ],
         "page": 1,
@@ -129,12 +144,10 @@ def detail():
 
 @app.route("/play")
 def play():
-    # 🔥 【核心修復】絕對不可用空 pass！先回傳標準錯誤 JSON 釋放 TVBox 連線
-    # 待你測試搜尋與詳情頁成功後，再把你的 DramasQ M3U8 暴力破解代碼覆蓋到這裡
+    # 保留你原本的解密代碼，若無，先用以下標準格式回傳釋放連線
     return jsonify({
         "parse": 0,
-        "url": "https://p.test/error.m3u8",
-        "msg": "請補齊此處的解密核心代碼"
+        "url": "https://p.test/error.m3u8"
     })
 
 if __name__ == "__main__":
