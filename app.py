@@ -5,18 +5,20 @@ import requests
 
 app = Flask(__name__)
 
-# 🏷️ 在這裡定義你的版本號，每次修改推上去前可以手動改版，方便在 TVBox 上辨識
-VERSION = "v1.0.3-DramasQ-Fix"
+# 🏷️ 版本註記（方便你等一下辨識）
+VERSION = "v1.0.4-Ultimate-Fix"
 
 headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
     "Referer": "https://www.dramasq.com.tr/"
 }
 
+# 🎯 核心修正 1：讓根目錄 (/) 與 /detail 跑同一套邏輯，徹底堵死 404 造成的空白畫面！
+@app.route("/")
 @app.route("/detail")
 def detail():
     vod_id = request.args.get("id")
-    keyword = request.args.get("wd")  # TVBox 搜尋時帶入的關鍵字參數
+    keyword = request.args.get("wd")
     
     base_url = request.host_url.rstrip('/')
 
@@ -65,8 +67,8 @@ def detail():
                         "vod_name": vod_name,
                         "vod_play_from": "DramaQ線路",
                         "vod_play_url": vod_play_url,
-                        "type_id": "dramasq_act",
-                        "type_name": f"劇迷 ({VERSION})", # 詳情頁也帶入版本註記
+                        "type_id": "1",
+                        "type_name": f"劇迷 ({VERSION})",
                         "vod_pic": "https://www.dramasq.com.tr/statics/img/nopic.gif",
                         "vod_remarks": VERSION
                     }
@@ -103,13 +105,12 @@ def detail():
                 
                 clean_name = re.sub(r'<[^>]+>', '', v_name).strip()
                 
-                # 🎯 搜尋結果補齊標準電視盒子需要的核心欄位，確保列表能正常長出來
                 vod_list.append({
                     "vod_id": v_id,
                     "vod_name": clean_name,
                     "vod_pic": "https://www.dramasq.com.tr/statics/img/nopic.gif",
-                    "vod_remarks": f"點擊播放 ({VERSION})", # 讓你在搜尋結果中也能確認版本
-                    "type_id": "dramasq_act",
+                    "vod_remarks": f"點擊選集 ({VERSION})",
+                    "type_id": "1",
                     "type_name": "連續劇"
                 })
                 
@@ -124,19 +125,19 @@ def detail():
         except Exception as e:
             return jsonify({"error": f"Search error: {str(e)}", "list": []})
 
-    # ------------------ 情況 3：TVBox 剛開機首頁初始化 ------------------
-    # 在這裡動態展示你的 API 版本號，一看畫面就知道是不是最新代碼！
+    # ------------------ 情況 3：首頁初始化保底（什麼參數都沒帶） ------------------
+    # 這裡提供最標準、最寬容的 CMS 回傳格式
     return jsonify({
         "class": [
-            {"class_id": "dramasq_act", "class_name": f"劇迷熱門({VERSION})"} # 分類名稱註記
+            {"class_id": "1", "class_name": f"劇迷熱門({VERSION})"}
         ],
         "list": [
             {
                 "vod_id": "46951",
-                "vod_name": f"逐玉 ({VERSION} 測試推薦)", # 影片名稱註記
+                "vod_name": f"逐玉 ({VERSION} 測試推薦)",
                 "vod_pic": "https://www.dramasq.com.tr/statics/img/nopic.gif",
-                "vod_remarks": f"核心版本: {VERSION}", # 影片標籤註記
-                "type_id": "dramasq_act",
+                "vod_remarks": f"核心版本: {VERSION}",
+                "type_id": "1",
                 "type_name": "連續劇"
             }
         ],
