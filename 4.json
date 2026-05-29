@@ -1,15 +1,9 @@
 {
   "sites": [
     {
-      "key": "量子",
-      "name": "量子資源 (Cms0)",
-      "type": 0,
-      "api": "https://tx-api.onrender.com/detail"
-    },
-    {
       "key": "py_dramasq_cloud",
       "name": "劇迷 DramasQ (雲端免IP線)",
-      "type": 1,
+      "type": 3,
       "api": "https://tx-api.onrender.com/detail",
       "searchable": 1,
       "quickSearch": 1,
