@@ -5,6 +5,9 @@ import requests
 
 app = Flask(__name__)
 
+# 🏷️ 在這裡定義你的版本號，每次修改推上去前可以手動改版，方便在 TVBox 上辨識
+VERSION = "v1.0.3-DramasQ-Fix"
+
 headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
     "Referer": "https://www.dramasq.com.tr/"
@@ -25,11 +28,9 @@ def detail():
             r.encoding = "utf-8"
             html = r.text
             
-            # 撈取正確劇名
             title_match = re.search(r'<title>(.*?)線上看', html)
             vod_name = title_match.group(1).strip() if title_match else "DramasQ 影片"
             
-            # 撈取集數
             pattern = r'href=[\'"]\/video\/' + re.escape(vod_id) + r'-(\d+)\.html.*?[\'"][^>]*>(.*?)<\/a>'
             ep_matches = re.findall(pattern, html)
             
@@ -51,14 +52,12 @@ def detail():
                     play_url = f"{base_url}/play?id={vod_id}&ep={ep_num}"
                     play_list.append(f"{clean_title}${play_url}")
             else:
-                # 找不到集數時的保底
                 for ep in range(1, 41):
                     play_url = f"{base_url}/play?id={vod_id}&ep={ep}"
                     play_list.append(f"第{ep}集${play_url}")
 
             vod_play_url = "#".join(play_list)
 
-            # 🎯 這裡使用最標準、剛才測試成功的最低環境詳情外殼，完美相容 Java 模型
             return jsonify({
                 "list": [
                     {
@@ -66,7 +65,10 @@ def detail():
                         "vod_name": vod_name,
                         "vod_play_from": "DramaQ線路",
                         "vod_play_url": vod_play_url,
-                        "type_id": "dramasq_act"
+                        "type_id": "dramasq_act",
+                        "type_name": f"劇迷 ({VERSION})", # 詳情頁也帶入版本註記
+                        "vod_pic": "https://www.dramasq.com.tr/statics/img/nopic.gif",
+                        "vod_remarks": VERSION
                     }
                 ]
             })
@@ -101,40 +103,51 @@ def detail():
                 
                 clean_name = re.sub(r'<[^>]+>', '', v_name).strip()
                 
+                # 🎯 搜尋結果補齊標準電視盒子需要的核心欄位，確保列表能正常長出來
                 vod_list.append({
                     "vod_id": v_id,
                     "vod_name": clean_name,
                     "vod_pic": "https://www.dramasq.com.tr/statics/img/nopic.gif",
-                    "vod_remarks": "點擊選集播放",
-                    "type_id": "dramasq_act"  # 對齊分類 ID
+                    "vod_remarks": f"點擊播放 ({VERSION})", # 讓你在搜尋結果中也能確認版本
+                    "type_id": "dramasq_act",
+                    "type_name": "連續劇"
                 })
                 
-            return jsonify({"list": vod_list})
+            return jsonify({
+                "list": vod_list,
+                "page": 1,
+                "pagecount": 1,
+                "limit": len(vod_list),
+                "total": len(vod_list)
+            })
             
         except Exception as e:
             return jsonify({"error": f"Search error: {str(e)}", "list": []})
 
     # ------------------ 情況 3：TVBox 剛開機首頁初始化 ------------------
-    # 這裡保持我們剛剛「完全不閃退」的極簡靜態結構
+    # 在這裡動態展示你的 API 版本號，一看畫面就知道是不是最新代碼！
     return jsonify({
         "class": [
-            {"class_id": "dramasq_act", "class_name": "劇迷熱門"}
+            {"class_id": "dramasq_act", "class_name": f"劇迷熱門({VERSION})"} # 分類名稱註記
         ],
         "list": [
             {
                 "vod_id": "46951",
-                "vod_name": "逐玉 (雲端測試推薦，請點擊搜尋看更多)",
+                "vod_name": f"逐玉 ({VERSION} 測試推薦)", # 影片名稱註記
                 "vod_pic": "https://www.dramasq.com.tr/statics/img/nopic.gif",
-                "vod_remarks": "40集完結",
-                "type_id": "dramasq_act"
+                "vod_remarks": f"核心版本: {VERSION}", # 影片標籤註記
+                "type_id": "dramasq_act",
+                "type_name": "連續劇"
             }
-        ]
+        ],
+        "page": 1,
+        "pagecount": 1,
+        "limit": 20,
+        "total": 1
     })
 
 @app.route("/play")
 def play():
-    # 🛠️ 這裡請塞入你原本實作好的 M3U8 暴力解密代碼！
-    # 如果還在測試，可以先保留下方這行大雄兔測試源，確保點擊集數能播：
     return jsonify({
         "parse": 0,
         "url": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8"
