@@ -7,10 +7,10 @@
       "api": "https://cj.lziapi.com/api.php/provide/vod/at/xml/"
     },
     {
-      "key": "py_dramasq",
-      "name": "劇迷 DramasQ (雲端完美線)",
+      "key": "py_dramasq_cloud",
+      "name": "劇迷 DramasQ (雲端免IP線)",
       "type": 1,
-      "api": "https://你的專屬名稱.zeabur.app/detail",
+      "api": "https://tx-api.onrender.com/detail",
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 0
