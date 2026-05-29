@@ -5,15 +5,14 @@ import requests
 
 app = Flask(__name__)
 
-# 🏷️ 版本註記（方便你等一下辨識）
-VERSION = "v1.0.4-Ultimate-Fix"
+# 🏷️ 版本註記（這次我們叫安全版）
+VERSION = "v1.0.5-Safe-Strict"
 
 headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
     "Referer": "https://www.dramasq.com.tr/"
 }
 
-# 🎯 核心修正 1：讓根目錄 (/) 與 /detail 跑同一套邏輯，徹底堵死 404 造成的空白畫面！
 @app.route("/")
 @app.route("/detail")
 def detail():
@@ -60,6 +59,7 @@ def detail():
 
             vod_play_url = "#".join(play_list)
 
+            # 🎯 詳情頁回傳：維持與最低環境完全相同的單純 list 結構
             return jsonify({
                 "list": [
                     {
@@ -68,9 +68,7 @@ def detail():
                         "vod_play_from": "DramaQ線路",
                         "vod_play_url": vod_play_url,
                         "type_id": "1",
-                        "type_name": f"劇迷 ({VERSION})",
-                        "vod_pic": "https://www.dramasq.com.tr/statics/img/nopic.gif",
-                        "vod_remarks": VERSION
+                        "type_name": f"劇迷 ({VERSION})"
                     }
                 ]
             })
@@ -114,19 +112,16 @@ def detail():
                     "type_name": "連續劇"
                 })
                 
+            # 🎯 搜尋回傳：徹底拔除 page, limit 等容易越界的地雷欄位
             return jsonify({
-                "list": vod_list,
-                "page": 1,
-                "pagecount": 1,
-                "limit": len(vod_list),
-                "total": len(vod_list)
+                "list": vod_list
             })
             
         except Exception as e:
             return jsonify({"error": f"Search error: {str(e)}", "list": []})
 
-    # ------------------ 情況 3：首頁初始化保底（什麼參數都沒帶） ------------------
-    # 這裡提供最標準、最寬容的 CMS 回傳格式
+    # ------------------ 情況 3：首頁初始化（完全複製最低環境成功的外殼） ------------------
+    # 徹底拔除 page, limit, total，只保留 class 和 list，給 TVBox 最安全的環境
     return jsonify({
         "class": [
             {"class_id": "1", "class_name": f"劇迷熱門({VERSION})"}
@@ -140,11 +135,7 @@ def detail():
                 "type_id": "1",
                 "type_name": "連續劇"
             }
-        ],
-        "page": 1,
-        "pagecount": 1,
-        "limit": 20,
-        "total": 1
+        ]
     })
 
 @app.route("/play")
