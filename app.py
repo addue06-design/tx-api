@@ -17,8 +17,7 @@ def detail():
     
     base_url = request.host_url.rstrip('/')
 
-    # ------------------ 情況 1：點進影片詳情頁（優先權最高） ------------------
-    # 只要有帶 id，不管有沒有帶 wd，一律優先處理撈集數詳情！
+    # ------------------ 情況 1：點進影片詳情頁（撈集數） ------------------
     if vod_id:
         detail_url = f"https://www.dramasq.com.tr/voddetail/{vod_id}.html"
         try:
@@ -71,7 +70,6 @@ def detail():
             return jsonify({"error": f"Detail error: {str(e)}", "list": []})
 
     # ------------------ 情況 2：TVBox 發起搜尋 ------------------
-    # 沒有帶 id，但有帶 wd 時，執行搜尋爬蟲
     if keyword:
         encoded_keyword = urllib.parse.quote(keyword.strip())
         search_url = f"https://www.dramasq.com.tr/vodsearch/-------------.html?wd={encoded_keyword}"
@@ -110,8 +108,7 @@ def detail():
         except Exception as e:
             return jsonify({"error": f"Search error: {str(e)}", "list": []})
 
-    # ------------------ 情況 3：首頁初始化（什麼參數都沒帶） ------------------
-    # 帶入固定的 class 分類與《逐玉》的推薦，點擊直接可看，且防止電視盒子閃退
+    # ------------------ 情況 3：首頁初始化保底 ------------------
     return jsonify({
         "class": [
             {"class_id": "1", "class_name": "劇迷熱門連續劇"}
@@ -132,8 +129,13 @@ def detail():
 
 @app.route("/play")
 def play():
-    # 🛠️ 請記得在這裡補回你原本處理 DramasQ 網頁核心的 M3U8 暴力解密代碼！
-    pass
+    # 🔥 【核心修復】絕對不可用空 pass！先回傳標準錯誤 JSON 釋放 TVBox 連線
+    # 待你測試搜尋與詳情頁成功後，再把你的 DramasQ M3U8 暴力破解代碼覆蓋到這裡
+    return jsonify({
+        "parse": 0,
+        "url": "https://p.test/error.m3u8",
+        "msg": "請補齊此處的解密核心代碼"
+    })
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
