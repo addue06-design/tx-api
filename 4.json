@@ -4,7 +4,7 @@
       "key": "量子",
       "name": "量子資源 (Cms0)",
       "type": 0,
-      "api": ""
+      "api": "https://tx-api.onrender.com/detail"
     },
     {
       "key": "py_dramasq_cloud",
