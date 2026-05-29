@@ -1,9 +1,9 @@
 {
   "sites": [
     {
-      "key": "py_dramasq_cloud",
+      "key": "py_dramasq_freebox",
       "name": "劇迷 DramasQ (雲端免IP線)",
-      "type": 3,
+      "type": 1,
       "api": "https://tx-api.onrender.com/detail",
       "searchable": 1,
       "quickSearch": 1,
