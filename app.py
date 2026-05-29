@@ -17,46 +17,8 @@ def detail():
     
     base_url = request.host_url.rstrip('/')
 
-    # ------------------ 情況 A：TVBox 發起搜尋 ------------------
-    if keyword and not vod_id:
-        encoded_keyword = urllib.parse.quote(keyword)
-        search_url = f"https://www.dramasq.com.tr/vodsearch/-------------.html?wd={encoded_keyword}"
-        
-        try:
-            r = requests.get(search_url, headers=headers, timeout=10)
-            r.encoding = "utf-8"
-            html = r.text
-            
-            pattern = r'href=[\'"]\/voddetail\/(\d+)\.html[\'"]\s+title=[\'"](.*?)[\'"]'
-            matches = re.findall(pattern, html)
-            
-            if not matches:
-                pattern_alt = r'href=[\'"]\/voddetail\/(\d+)\.html[\'"].*?>(.*?)<\/a>'
-                matches = re.findall(pattern_alt, html)
-
-            vod_list = []
-            seen_ids = set()
-            
-            for v_id, v_name in matches:
-                if v_id in seen_ids:
-                    continue
-                seen_ids.add(v_id)
-                
-                clean_name = re.sub(r'<[^>]+>', '', v_name).strip()
-                
-                vod_list.append({
-                    "vod_id": v_id,
-                    "vod_name": clean_name,
-                    "vod_pic": "https://www.dramasq.com.tr/statics/img/nopic.gif",
-                    "vod_remarks": "點擊選集播放"
-                })
-                
-            return jsonify({"list": vod_list})
-            
-        except Exception as e:
-            return jsonify({"error": f"Search error: {str(e)}", "list": []})
-
-    # ------------------ 情況 B：進入影片詳情頁（撈集數） ------------------
+    # ------------------ 情況 1：點進影片詳情頁（優先權最高） ------------------
+    # 只要有帶 id，不管有沒有帶 wd，一律優先處理撈集數詳情！
     if vod_id:
         detail_url = f"https://www.dramasq.com.tr/voddetail/{vod_id}.html"
         try:
@@ -108,20 +70,69 @@ def detail():
         except Exception as e:
             return jsonify({"error": f"Detail error: {str(e)}", "list": []})
 
-    # ------------------ 情況 C：【關鍵防閃退】什麼參數都沒帶時 ------------------
-    # 吐出結構完整的空分類，欺騙 TVBox 的 JSON 解析器，確保其能平穩加載不閃退
+    # ------------------ 情況 2：TVBox 發起搜尋 ------------------
+    # 沒有帶 id，但有帶 wd 時，執行搜尋爬蟲
+    if keyword:
+        encoded_keyword = urllib.parse.quote(keyword.strip())
+        search_url = f"https://www.dramasq.com.tr/vodsearch/-------------.html?wd={encoded_keyword}"
+        
+        try:
+            r = requests.get(search_url, headers=headers, timeout=10)
+            r.encoding = "utf-8"
+            html = r.text
+            
+            pattern = r'href=[\'"]\/voddetail\/(\d+)\.html[\'"]\s+title=[\'"](.*?)[\'"]'
+            matches = re.findall(pattern, html)
+            
+            if not matches:
+                pattern_alt = r'href=[\'"]\/voddetail\/(\d+)\.html[\'"].*?>(.*?)<\/a>'
+                matches = re.findall(pattern_alt, html)
+
+            vod_list = []
+            seen_ids = set()
+            
+            for v_id, v_name in matches:
+                if v_id in seen_ids:
+                    continue
+                seen_ids.add(v_id)
+                
+                clean_name = re.sub(r'<[^>]+>', '', v_name).strip()
+                
+                vod_list.append({
+                    "vod_id": v_id,
+                    "vod_name": clean_name,
+                    "vod_pic": "https://www.dramasq.com.tr/statics/img/nopic.gif",
+                    "vod_remarks": "點擊選集播放"
+                })
+                
+            return jsonify({"list": vod_list})
+            
+        except Exception as e:
+            return jsonify({"error": f"Search error: {str(e)}", "list": []})
+
+    # ------------------ 情況 3：首頁初始化（什麼參數都沒帶） ------------------
+    # 帶入固定的 class 分類與《逐玉》的推薦，點擊直接可看，且防止電視盒子閃退
     return jsonify({
-        "class": [],
-        "list": [],
+        "class": [
+            {"class_id": "1", "class_name": "劇迷熱門連續劇"}
+        ],
+        "list": [
+            {
+                "vod_id": "46951",
+                "vod_name": "逐玉 (雲端測試推薦，請點擊搜尋看更多)",
+                "vod_pic": "https://www.dramasq.com.tr/statics/img/nopic.gif",
+                "vod_remarks": "40集完結"
+            }
+        ],
         "page": 1,
         "pagecount": 1,
         "limit": 20,
-        "total": 0
+        "total": 1
     })
 
 @app.route("/play")
 def play():
-    # 這裡保留你原本寫好的解密核心代碼
+    # 🛠️ 請記得在這裡補回你原本處理 DramasQ 網頁核心的 M3U8 暴力解密代碼！
     pass
 
 if __name__ == "__main__":
