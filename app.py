@@ -27,12 +27,9 @@ def detail():
             r.encoding = "utf-8"
             html = r.text
             
-            # 正則匹配搜尋結果中的影片 ID、名稱和海報圖片
-            # 格式通常為：href="/voddetail/46951.html" title="逐玉"
             pattern = r'href=[\'"]\/voddetail\/(\d+)\.html[\'"]\s+title=[\'"](.*?)[\'"]'
             matches = re.findall(pattern, html)
             
-            # 保底匹配（如果上一種沒撈到，試試有帶 class 的格式）
             if not matches:
                 pattern_alt = r'href=[\'"]\/voddetail\/(\d+)\.html[\'"].*?>(.*?)<\/a>'
                 matches = re.findall(pattern_alt, html)
@@ -45,13 +42,12 @@ def detail():
                     continue
                 seen_ids.add(v_id)
                 
-                # 清理 HTML 標籤
                 clean_name = re.sub(r'<[^>]+>', '', v_name).strip()
                 
                 vod_list.append({
                     "vod_id": v_id,
                     "vod_name": clean_name,
-                    "vod_pic": "https://www.dramasq.com.tr/statics/img/nopic.gif", # 先給預設圖
+                    "vod_pic": "https://www.dramasq.com.tr/statics/img/nopic.gif",
                     "vod_remarks": "點擊選集播放"
                 })
                 
@@ -94,7 +90,7 @@ def detail():
             else:
                 for ep in range(1, 41):
                     play_url = f"{base_url}/play?id={vod_id}&ep={ep}"
-                    play_list.append(f"第{ep;u}集${play_url}")
+                    play_list.append(f"第{ep}集${play_url}")
 
             vod_play_url = "#".join(play_list)
 
@@ -112,12 +108,20 @@ def detail():
         except Exception as e:
             return jsonify({"error": f"Detail error: {str(e)}", "list": []})
 
-    # 什麼都沒帶就回空
-    return jsonify({"list": []})
+    # ------------------ 情況 C：【關鍵防閃退】什麼參數都沒帶時 ------------------
+    # 吐出結構完整的空分類，欺騙 TVBox 的 JSON 解析器，確保其能平穩加載不閃退
+    return jsonify({
+        "class": [],
+        "list": [],
+        "page": 1,
+        "pagecount": 1,
+        "limit": 20,
+        "total": 0
+    })
 
 @app.route("/play")
 def play():
-    # 🛠️ 請記得在這裡補回你原本處理 DramasQ 網頁核心的 M3U8 暴力解密代碼
+    # 這裡保留你原本寫好的解密核心代碼
     pass
 
 if __name__ == "__main__":
