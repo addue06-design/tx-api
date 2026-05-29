@@ -12,15 +12,13 @@ headers = {
 
 @app.route("/detail")
 def detail():
-    # 🔥 擴充參數接收，完美相容 PC 端 Freebox 與各版本 Android TV 盒子
-    vod_id = request.args.get("id") or request.args.get("ids")
-    keyword = request.args.get("wd") or request.args.get("keyword") or request.args.get("searchword")
+    vod_id = request.args.get("id")
+    keyword = request.args.get("wd")  # TVBox 搜尋時帶入的關鍵字參數
     
     base_url = request.host_url.rstrip('/')
 
-    # ================== 【情況 A：發起搜尋】 ==================
-    if keyword:
-        keyword = keyword.strip()
+    # ------------------ 情況 A：TVBox 發起搜尋 ------------------
+    if keyword and not vod_id:
         encoded_keyword = urllib.parse.quote(keyword)
         search_url = f"https://www.dramasq.com.tr/vodsearch/-------------.html?wd={encoded_keyword}"
         
@@ -29,12 +27,14 @@ def detail():
             r.encoding = "utf-8"
             html = r.text
             
-            # 🎯 終極雙重正則：確保通殺新舊版 DramasQ 搜尋結構
+            # 正則匹配搜尋結果中的影片 ID、名稱和海報圖片
+            # 格式通常為：href="/voddetail/46951.html" title="逐玉"
             pattern = r'href=[\'"]\/voddetail\/(\d+)\.html[\'"]\s+title=[\'"](.*?)[\'"]'
             matches = re.findall(pattern, html)
             
+            # 保底匹配（如果上一種沒撈到，試試有帶 class 的格式）
             if not matches:
-                pattern_alt = r'href=[\'"]\/voddetail\/(\d+)\.html[\'"][^>]*>(.*?)<\/a>'
+                pattern_alt = r'href=[\'"]\/voddetail\/(\d+)\.html[\'"].*?>(.*?)<\/a>'
                 matches = re.findall(pattern_alt, html)
 
             vod_list = []
@@ -45,22 +45,22 @@ def detail():
                     continue
                 seen_ids.add(v_id)
                 
-                # 清理過長的 HTML 標籤或無效文字
+                # 清理 HTML 標籤
                 clean_name = re.sub(r'<[^>]+>', '', v_name).strip()
-                if clean_name and len(clean_name) < 30 and "首頁" not in clean_name:
-                    vod_list.append({
-                        "vod_id": v_id,
-                        "vod_name": clean_name,
-                        "vod_pic": "https://www.dramasq.com.tr/statics/img/nopic.gif", 
-                        "vod_remarks": "劇迷雲端免IP線"
-                    })
+                
+                vod_list.append({
+                    "vod_id": v_id,
+                    "vod_name": clean_name,
+                    "vod_pic": "https://www.dramasq.com.tr/statics/img/nopic.gif", # 先給預設圖
+                    "vod_remarks": "點擊選集播放"
+                })
                 
             return jsonify({"list": vod_list})
             
         except Exception as e:
             return jsonify({"error": f"Search error: {str(e)}", "list": []})
 
-    # ================== 【情況 B：進入影片詳情頁（撈集數）】 ==================
+    # ------------------ 情況 B：進入影片詳情頁（撈集數） ------------------
     if vod_id:
         detail_url = f"https://www.dramasq.com.tr/voddetail/{vod_id}.html"
         try:
@@ -92,10 +92,9 @@ def detail():
                     play_url = f"{base_url}/play?id={vod_id}&ep={ep_num}"
                     play_list.append(f"{clean_title}${play_url}")
             else:
-                # 保底生成 40 集
                 for ep in range(1, 41):
                     play_url = f"{base_url}/play?id={vod_id}&ep={ep}"
-                    play_list.append(f"第{ep}集${play_url}")
+                    play_list.append(f"第{ep;u}集${play_url}")
 
             vod_play_url = "#".join(play_list)
 
@@ -113,31 +112,12 @@ def detail():
         except Exception as e:
             return jsonify({"error": f"Detail error: {str(e)}", "list": []})
 
-    # ================== 【情況 C：核心關鍵！首頁初始化保底】 ==================
-    # 當 Freebox 使用 type: 1 剛載入站點時，會發送無參數請求。
-    # 吐出固定的 class 分類與推薦影片，防止播放器因為解析不到欄位而報錯或死當！
-    return jsonify({
-        "class": [
-            {"class_id": "1", "class_name": "劇迷熱門連續劇"}
-        ],
-        "list": [
-            {
-                "vod_id": "46951",
-                "vod_name": "逐玉 (雲端測試推薦，請點擊搜尋看更多)",
-                "vod_pic": "https://www.dramasq.com.tr/statics/img/nopic.gif",
-                "vod_remarks": "點擊直接進入選集"
-            }
-        ],
-        "page": 1,
-        "pagecount": 1,
-        "limit": 20,
-        "total": 1
-    })
+    # 什麼都沒帶就回空
+    return jsonify({"list": []})
 
 @app.route("/play")
 def play():
-    # 🛠️ 這裡請塞入你原本實作好的 M3U8 暴力解密代碼！
-    # 也就是回傳 {"url": "xxx.m3u8", "parse": 0, "header": {...}} 的那段。
+    # 🛠️ 請記得在這裡補回你原本處理 DramasQ 網頁核心的 M3U8 暴力解密代碼
     pass
 
 if __name__ == "__main__":
