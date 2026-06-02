@@ -1,8 +1,10 @@
 {
+  "spider": "",
+  "wallpaper": "https://api.kdcc.cn",
   "sites": [
     {
-      "key": "py_dramasq_cloud",
-      "name": "劇迷 DramasQ (雲端免IP線)",
+      "key": "py_dramasq_test",
+      "name": "劇迷 DramasQ 測試",
       "type": 1,
       "api": "https://tx-api.onrender.com/detail",
       "searchable": 1,
