@@ -5,8 +5,8 @@ import requests
 
 app = Flask(__name__)
 
-# 🏷️ 版本註記（這次我們叫安全版）
-VERSION = "v1.0.5-Safe-Strict"
+# 🏷️ 版本註記
+VERSION = "v1.0.6-Standard-CMS"
 
 headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
@@ -59,7 +59,6 @@ def detail():
 
             vod_play_url = "#".join(play_list)
 
-            # 🎯 詳情頁回傳：維持與最低環境完全相同的單純 list 結構
             return jsonify({
                 "list": [
                     {
@@ -67,8 +66,9 @@ def detail():
                         "vod_name": vod_name,
                         "vod_play_from": "DramaQ線路",
                         "vod_play_url": vod_play_url,
-                        "type_id": "1",
-                        "type_name": f"劇迷 ({VERSION})"
+                        "type_id": "lianxuju",
+                        "vod_pic": "https://www.dramasq.com.tr/statics/img/nopic.gif",
+                        "vod_remarks": VERSION
                     }
                 ]
             })
@@ -108,11 +108,9 @@ def detail():
                     "vod_name": clean_name,
                     "vod_pic": "https://www.dramasq.com.tr/statics/img/nopic.gif",
                     "vod_remarks": f"點擊選集 ({VERSION})",
-                    "type_id": "1",
-                    "type_name": "連續劇"
+                    "type_id": "lianxuju"
                 })
                 
-            # 🎯 搜尋回傳：徹底拔除 page, limit 等容易越界的地雷欄位
             return jsonify({
                 "list": vod_list
             })
@@ -120,11 +118,13 @@ def detail():
         except Exception as e:
             return jsonify({"error": f"Search error: {str(e)}", "list": []})
 
-    # ------------------ 情況 3：首頁初始化（完全複製最低環境成功的外殼） ------------------
-    # 徹底拔除 page, limit, total，只保留 class 和 list，給 TVBox 最安全的環境
+    # ------------------ 情況 3：首頁初始化（完全對齊標準滿分範本） ------------------
     return jsonify({
         "class": [
-            {"class_id": "1", "class_name": f"劇迷熱門({VERSION})"}
+            {
+                "type_id": "lianxuju",
+                "type_name": f"連續劇({VERSION})" # 這裡改用 type_id 迎合 Java
+            }
         ],
         "list": [
             {
@@ -132,8 +132,7 @@ def detail():
                 "vod_name": f"逐玉 ({VERSION} 測試推薦)",
                 "vod_pic": "https://www.dramasq.com.tr/statics/img/nopic.gif",
                 "vod_remarks": f"核心版本: {VERSION}",
-                "type_id": "1",
-                "type_name": "連續劇"
+                "type_id": "lianxuju"
             }
         ]
     })
