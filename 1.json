@@ -11,11 +11,11 @@
   "sites": [
 {
       "key": "js_dramasq",
-      "name": "📺劇迷┃DramasQ (QuickJS測試)",
+      "name": "📺劇迷┃DramasQ (JAR萬能核心版)",
       "type": 3,
       "api": "csp_Js",
       "jar": "./jar/custom_spider.jar",
-      "ext": "./mysq.js",
+      "ext": "https://ghfast.top/https://raw.githubusercontent.com/你的GitHub帳號/你的儲存庫名稱/main/mysq.js",
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 0
