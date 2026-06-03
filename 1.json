@@ -11,10 +11,10 @@
   "sites": [
 {
       "key": "js_dramasq",
-      "name": "📺劇迷┃DramasQ (純淨版測試1)",
+      "name": "📺劇迷┃DramasQ (純淨版測試2)",
       "type": 3,
       "api": "csp_AppDrpy",
-      "ext": "./mysq.js",
+      "ext": "https://raw.githubusercontent.com/addue06-design/tx-api/refs/heads/main/1.js",
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 0
