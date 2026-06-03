@@ -16,7 +16,7 @@
   "api": "csp_Bili",
   "jar": "./jar/custom_spider.jar",
   "searchable": 1
-}
+},
     {
       "key": "点我切换播放源",
       "name": "🎬首页｜热播",
