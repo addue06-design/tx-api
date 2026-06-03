@@ -10,16 +10,13 @@
   ],
   "sites": [
 {
-      "key": "js_dramasq",
-      "name": "📺劇迷┃DramasQ (JAR萬能核心版)",
-      "type": 3,
-      "api": "csp_Js",
-      "jar": "./jar/custom_spider.jar",
-      "ext": "https://ghfast.top/https://raw.githubusercontent.com/你的GitHub帳號/你的儲存庫名稱/main/mysq.js",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0
-    },
+  "key": "jar_bili",
+  "name": "📺 內建B站 (直接調用 Java 核心)",
+  "type": 3,
+  "api": "csp_Bili",
+  "jar": "./jar/custom_spider.jar",
+  "searchable": 1
+}
     {
       "key": "点我切换播放源",
       "name": "🎬首页｜热播",
