@@ -1,11 +1,14 @@
 {
-      "key": "jar_dramasq_v1",
-      "name": "📺劇迷┃DramasQ (老核心A版)",
+  "spider": "",
+  "sites": [
+    {
+      "key": "js_dramasq",
+      "name": "📺劇迷┃DramasQ (純JS免JAR版)",
       "type": 3,
-      "api": "csp_Xpath",
-      "jar": "./jar/custom_spider.jar",
-      "ext": "https://raw.githubusercontent.com/addue06-design/tx-api/refs/heads/main/2.json",
+      "api": "https://raw.githubusercontent.com/addue06-design/tx-api/refs/heads/main/mysq.js",
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 0
     }
+  ]
+}
