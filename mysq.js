@@ -22,7 +22,6 @@ async function category(tid, pg, filter, extend) {
     let html = await req(url, { headers: header });
     let items = [];
     
-    // 直接調用你反編譯看到的 pdfa, pdfh, pd
     let list = pdfa(html, '.list-vod li, .vodlist li');
     list.forEach(it => {
         items.push({
