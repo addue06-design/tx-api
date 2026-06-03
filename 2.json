@@ -1,0 +1,8 @@
+{
+  "key": "jar_bili",
+  "name": "📺 內建B站 (直接調用 Java 核心)",
+  "type": 3,
+  "api": "csp_Bili",
+  "jar": "./jar/custom_spider.jar",
+  "searchable": 1
+}
