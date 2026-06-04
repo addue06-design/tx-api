@@ -1,14 +1,9 @@
 {
-  "spider": "",
-  "sites": [
-    {
-      "key": "js_dramasq",
-      "name": "📺劇迷┃DramasQ (純JS免JAR版)",
-      "type": 3,
-      "api": "https://raw.githubusercontent.com/addue06-design/tx-api/refs/heads/main/mysq.js",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0
-    }
-  ]
+  "key": "testjs",
+  "name": "🧪JS測試",
+  "type": 3,
+  "api": "https://raw.githubusercontent.com/addue06-design/tx-api/refs/heads/main/test.js",
+  "searchable": 1,
+  "quickSearch": 1,
+  "changeable": 0
 }
