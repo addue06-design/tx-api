@@ -1,9 +1,13 @@
 {
-  "key": "testjs",
-  "name": "🧪JS測試",
-  "type": 3,
-  "api": "https://raw.githubusercontent.com/addue06-design/tx-api/refs/heads/main/test.js",
-  "searchable": 1,
-  "quickSearch": 1,
-  "changeable": 0
+  "sites": [
+    {
+      "key": "testjs",
+      "name": "🧪JS測試",
+      "type": 3,
+      "api": "https://raw.githubusercontent.com/addue06-design/tx-api/main/test.js",
+      "searchable": 1,
+      "quickSearch": 1,
+      "changeable": 0
+    }
+  ]
 }
